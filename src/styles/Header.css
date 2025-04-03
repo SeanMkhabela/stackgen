@@ -1,0 +1,17 @@
+.header-appbar {
+    z-index: 1201;
+    background: var(--header-gradient);
+    color: white;
+}
+
+.header-appbar.dark {
+    --header-gradient: linear-gradient(90deg, #2c2c54, #1e3a8a 60%, #0bc9e8);
+}
+
+.header-appbar.light {
+    --header-gradient: linear-gradient(90deg, #646cff, #3b82f6 60%, #61dafb);
+}
+
+.header-title {
+    flex-grow: 1;
+}
