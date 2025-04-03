@@ -19,8 +19,8 @@ StackGen lets you:
 
 ## 🖼️ Live Demo
 
-> Coming soon! 🚧  
-> (You can deploy this to [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/) for free)
+![CI/CD](https://github.com/SeanMkhabela/stackgen/actions/workflows/ci-cd.yml/badge.svg)
+
 
 ---
 
