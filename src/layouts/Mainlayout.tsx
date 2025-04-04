@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.tsx
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState, useCallback } from 'react'
 import { Box, CssBaseline, Toolbar } from '@mui/material'
 import Header from '../components/Header'
 import Sidebar, { drawerWidth } from '../components/Sidebar'
@@ -13,26 +13,29 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   const [sidebarWidth, setSidebarWidth] = useState(drawerWidth)
 
-  useEffect(() => {
-    const handleSidebarChange = () => {
-      const sidebarElement = document.querySelector('.MuiDrawer-paper')
-      if (sidebarElement) {
-        const width = parseInt(window.getComputedStyle(sidebarElement).width, 10)
-        setSidebarWidth(width)
-      }
-    }
-
-    const observer = new MutationObserver(handleSidebarChange)
+  // More efficient sidebar width tracking with useCallback
+  const handleSidebarChange = useCallback(() => {
     const sidebarElement = document.querySelector('.MuiDrawer-paper')
     if (sidebarElement) {
-      observer.observe(sidebarElement, { attributes: true })
+      const width = parseInt(window.getComputedStyle(sidebarElement).width, 10)
+      setSidebarWidth(width)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Create ResizeObserver instead of MutationObserver for better performance
+    const resizeObserver = new ResizeObserver(handleSidebarChange)
+    const sidebarElement = document.querySelector('.MuiDrawer-paper')
+    
+    if (sidebarElement) {
+      resizeObserver.observe(sidebarElement)
     }
 
     // Initial check
     handleSidebarChange()
 
-    return () => observer.disconnect()
-  }, [])
+    return () => resizeObserver.disconnect()
+  }, [handleSidebarChange])
 
   return (
     <Box
@@ -65,12 +68,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
             {children || <Outlet />}
           </Box>
         </Box>
-
       </Box>
 
-
       <ThemeSettings />
-
     </Box>
   )
 }
