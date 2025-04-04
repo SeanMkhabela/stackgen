@@ -1,5 +1,6 @@
 import { Box, Typography, Paper, Card, CardContent, Button, useTheme, Chip, Stack, Divider } from "@mui/material";
 import { useStack } from "../context/StackContext";
+import { useNavigate } from "react-router-dom";
 
 // Interface for parsed stack data
 interface ParsedStackData {
@@ -17,6 +18,7 @@ interface ParsedStackData {
 export default function Result() {
   const theme = useTheme();
   const { selectedStack } = useStack();
+  const navigate = useNavigate();
   
   // Default stack data
   const defaultStackData: ParsedStackData = {
@@ -118,9 +120,19 @@ export default function Result() {
           }}
         >
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Stack Configuration
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">
+                Stack Configuration
+              </Typography>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => navigate('/select-stack')}
+                sx={{ minWidth: 'auto' }}
+              >
+                Edit
+              </Button>
+            </Box>
             
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
               <Box>

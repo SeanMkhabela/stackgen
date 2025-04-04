@@ -1,7 +1,17 @@
 // ThemeProvider.tsx
 import React, { createContext, useMemo, useState, useEffect } from "react";
-import { ThemeProvider as MUIThemeProvider, createTheme, CssBaseline, PaletteMode, useMediaQuery } from "@mui/material";
+import { ThemeProvider as MUIThemeProvider, createTheme, CssBaseline, PaletteMode, useMediaQuery, Theme, ThemeOptions } from "@mui/material";
 import { getThemeOptions } from "../styles/theme";
+
+// Extend ThemeOptions to include our custom properties
+interface ExtendedThemeOptions extends ThemeOptions {
+  contentWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+}
+
+// Extend Theme to include our custom properties
+interface ExtendedTheme extends Theme {
+  contentWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+}
 
 type ColorModeContextType = {
   toggleColorMode: () => void;
@@ -30,10 +40,41 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
     return prefersDarkMode ? 'dark' : 'light';
   });
 
+  // Get additional theme settings from localStorage
+  const [fontSize, setFontSize] = useState<number>(() => {
+    const savedFontSize = localStorage.getItem('theme-font-size');
+    return savedFontSize ? parseInt(savedFontSize, 10) : 14;
+  });
+
+  const [primaryColor, setPrimaryColor] = useState<string>(() => {
+    return localStorage.getItem('theme-primary-color') || '#646cff';
+  });
+
+  const [contentWidth, setContentWidth] = useState<'xs' | 'sm' | 'md' | 'lg' | 'xl' | false>(() => {
+    const savedWidth = localStorage.getItem('theme-content-width');
+    return (savedWidth as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false) || 'lg';
+  });
+
   // Update localStorage when mode changes
   useEffect(() => {
     localStorage.setItem('theme-mode', mode);
   }, [mode]);
+
+  // Listen for changes in localStorage from other components
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme-font-size' && e.newValue) {
+        setFontSize(parseInt(e.newValue, 10));
+      } else if (e.key === 'theme-primary-color' && e.newValue) {
+        setPrimaryColor(e.newValue);
+      } else if (e.key === 'theme-content-width' && e.newValue) {
+        setContentWidth(e.newValue as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Listen for system preference changes only if no user preference exists
   useEffect(() => {
@@ -51,7 +92,29 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
   }), [mode]);
 
   // Memoize theme to prevent unnecessary re-creation
-  const theme = useMemo(() => createTheme(getThemeOptions(mode)), [mode]);
+  const theme = useMemo(() => {
+    const themeOptions = getThemeOptions(mode);
+    
+    // Apply custom settings from localStorage
+    const customizedThemeOptions: ExtendedThemeOptions = {
+      ...themeOptions,
+      typography: {
+        ...themeOptions.typography,
+        fontSize: fontSize,
+      },
+      palette: {
+        ...themeOptions.palette,
+        primary: {
+          ...themeOptions.palette?.primary,
+          main: primaryColor,
+        }
+      },
+      // Store contentWidth in theme to be used by layout components
+      contentWidth: contentWidth
+    };
+    
+    return createTheme(customizedThemeOptions) as ExtendedTheme;
+  }, [mode, fontSize, primaryColor, contentWidth]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>

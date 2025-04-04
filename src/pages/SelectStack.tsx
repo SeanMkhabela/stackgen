@@ -15,7 +15,8 @@ import {
   Switch,
   FormGroup,
   Divider,
-  Alert
+  Alert,
+  Tooltip
 } from "@mui/material";
 import {
   Code as ReactIcon,
@@ -31,11 +32,14 @@ import {
   SmartToy as RobotIcon,
   Info as InfoIcon,
   Warning as WarningIcon,
-  Check as CheckIcon
+  Check as CheckIcon,
+  HelpOutline as HelpIcon
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useStack } from "../context/StackContext";
+import { useWizard } from "../context/WizardContext";
 import { useState, useEffect } from "react";
+import GuidedSetupWizard from "../components/GuidedSetupWizard";
 
 // Define form structure with types
 interface StackFormData {
@@ -133,6 +137,7 @@ export default function SelectStack() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { setSelectedStack } = useStack();
+  const { showWizard, openWizard, closeWizard, hasSeenWizard, markWizardAsSeen } = useWizard();
 
   // Form state
   const [formData, setFormData] = useState<StackFormData>({
@@ -159,6 +164,18 @@ export default function SelectStack() {
     message: "Select a frontend and backend to get started. I'll help you choose compatible technologies.",
     type: "info"
   });
+
+  // Check if first-time user and show wizard
+  useEffect(() => {
+    if (!hasSeenWizard) {
+      // Delay to ensure UI is fully loaded
+      const timer = setTimeout(() => {
+        openWizard();
+        markWizardAsSeen();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasSeenWizard, openWizard, markWizardAsSeen]);
 
   // Update assistant message when selections change
   useEffect(() => {
@@ -289,14 +306,28 @@ export default function SelectStack() {
 
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{
-        fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
-        fontWeight: 600,
-        color: theme.palette.primary.main,
-        mb: 3
-      }}>
-        Select your stack
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{
+          fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+          fontWeight: 600,
+          color: theme.palette.primary.main,
+          mb: 0
+        }}>
+          Select your stack
+        </Typography>
+        
+        <Tooltip title="Get guided help">
+          <Button 
+            startIcon={<HelpIcon />} 
+            variant="outlined" 
+            color="primary"
+            onClick={openWizard}
+            sx={{ borderRadius: 8 }}
+          >
+            Guided Setup
+          </Button>
+        </Tooltip>
+      </Box>
 
       {/* Assistant Guidance Bar */}
       <Paper
@@ -382,7 +413,7 @@ export default function SelectStack() {
           mt: 3,
         }}>
           {/* Frontend Selection */}
-          <Card variant="outlined" sx={{ height: '100%' }}>
+          <Card variant="outlined" sx={{ height: '100%' }} id="frontend-selection">
             <CardHeader 
               title="Frontend" 
               action={
@@ -442,7 +473,7 @@ export default function SelectStack() {
           </Card>
 
           {/* Backend Selection */}
-          <Card variant="outlined" sx={{ height: '100%' }}>
+          <Card variant="outlined" sx={{ height: '100%' }} id="backend-selection">
             <CardHeader 
               title="Backend" 
               action={
@@ -503,7 +534,7 @@ export default function SelectStack() {
         </Box>
 
         {/* Features & Configuration */}
-        <Card variant="outlined" sx={{ mt: 3 }}>
+        <Card variant="outlined" sx={{ mt: 3 }} id="features-configuration">
           <CardHeader title="Features & Configuration" />
           <CardContent>
             <FormGroup>
@@ -576,11 +607,15 @@ export default function SelectStack() {
             size="large"
             onClick={handleSubmit}
             disabled={isSubmitting}
+            id="generate-button"
           >
             Generate Project
           </Button>
         </Box>
       </Paper>
+      
+      {/* Guided Setup Wizard Dialog */}
+      <GuidedSetupWizard open={showWizard} onClose={closeWizard} />
     </Box>
   );
 }

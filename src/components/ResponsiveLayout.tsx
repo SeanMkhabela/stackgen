@@ -1,5 +1,10 @@
 import { ReactNode } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, useTheme, Theme } from '@mui/material';
+
+// Extend the Theme type to include our custom properties
+interface ExtendedTheme extends Theme {
+  contentWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+}
 
 interface ResponsiveLayoutProps {
   children: ReactNode;
@@ -18,6 +23,10 @@ export default function ResponsiveLayout({
   disableGutters = false,
   centerContent = false,
 }: ResponsiveLayoutProps) {
+  // Get the content width from theme if available
+  const theme = useTheme() as ExtendedTheme;
+  const contentWidth = theme.contentWidth || maxWidth;
+  
   return (
     <Box
       sx={{
@@ -30,7 +39,7 @@ export default function ResponsiveLayout({
       }}
     >
       <Container
-        maxWidth={maxWidth}
+        maxWidth={contentWidth}
         disableGutters={disableGutters}
         sx={{
           display: 'flex',
@@ -60,8 +69,11 @@ export function CenteredContent({
   children: ReactNode;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 }) {
+  const theme = useTheme() as ExtendedTheme;
+  const contentWidth = theme.contentWidth || maxWidth;
+  
   return (
-    <ResponsiveLayout maxWidth={maxWidth} fullHeight centerContent>
+    <ResponsiveLayout maxWidth={contentWidth} fullHeight centerContent>
       {children}
     </ResponsiveLayout>
   );
@@ -75,8 +87,11 @@ export function PageLayout({
   children: ReactNode;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 }) {
+  const theme = useTheme() as ExtendedTheme;
+  const contentWidth = theme.contentWidth || maxWidth;
+  
   return (
-    <ResponsiveLayout maxWidth={maxWidth} fullHeight>
+    <ResponsiveLayout maxWidth={contentWidth} fullHeight>
       {children}
     </ResponsiveLayout>
   );

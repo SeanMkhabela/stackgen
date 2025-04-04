@@ -21,31 +21,36 @@ import Profile from './pages/Profile'
 // Route Protection
 import ProtectedRoute from './components/ProtectedRoute'
 
+// Context Providers
+import { WizardProvider } from './context/WizardContext'
+
 export default function App() {
   return (
-    <Routes>
-      {/* Auth routes */}
-      <Route element={<AuthLayout />}>
-        <Route path="/" element={<SignIn />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-      </Route>
-
-      {/* Main app routes */}
-      <Route element={<MainLayout />}>
-        <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/select-stack" element={<SelectStack />} />
-        
-        {/* Protected routes - requires stack selection */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/result" element={<Result />} />
+    <WizardProvider>
+      <Routes>
+        {/* Auth routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/" element={<SignIn />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
-        
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/profile" element={<Profile />} />
-      </Route>
-    </Routes>
+
+        {/* Main app routes */}
+        <Route element={<MainLayout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/select-stack" element={<SelectStack />} />
+          
+          {/* Protected routes - requires stack selection */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/result" element={<Result />} />
+          </Route>
+          
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      </Routes>
+    </WizardProvider>
   )
 }
