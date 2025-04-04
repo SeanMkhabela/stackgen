@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback, memo } from 'react';
 import { 
   Box, 
   Card, 
@@ -24,71 +24,76 @@ import { ColorModeContext } from './ThemeProvider';
 import { Settings as SettingsIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-export default function ThemeSettings() {
+// Memoize the theme settings to prevent unnecessary re-renders
+export default memo(function ThemeSettings() {
   const [open, setOpen] = useState(false);
   const { mode, toggleColorMode } = useContext(ColorModeContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   
-  // Get settings from localStorage
-  const [contentWidth, setContentWidth] = useState(() => {
-    return localStorage.getItem('theme-content-width') || 'lg';
-  });
+  // Get settings from localStorage with lazy initialization
+  const [contentWidth, setContentWidth] = useState(() => 
+    localStorage.getItem('theme-content-width') || 'lg'
+  );
   
-  const [fontSize, setFontSize] = useState(() => {
-    return parseInt(localStorage.getItem('theme-font-size') || '14', 10);
-  });
+  const [fontSize, setFontSize] = useState(() => 
+    parseInt(localStorage.getItem('theme-font-size') || '14', 10)
+  );
   
-  const [primaryColor, setPrimaryColor] = useState(() => {
-    return localStorage.getItem('theme-primary-color') || theme.palette.primary.main;
-  });
+  const [primaryColor, setPrimaryColor] = useState(() => 
+    localStorage.getItem('theme-primary-color') || theme.palette.primary.main
+  );
   
-  // Update localStorage when settings change
-  useEffect(() => {
+  // Update localStorage when settings change, using useCallback for better performance
+  const updateLocalStorage = useCallback(() => {
     localStorage.setItem('theme-content-width', contentWidth);
     localStorage.setItem('theme-font-size', fontSize.toString());
     localStorage.setItem('theme-primary-color', primaryColor);
   }, [contentWidth, fontSize, primaryColor]);
 
-  const goToSettings = () => {
+  useEffect(() => {
+    updateLocalStorage();
+  }, [updateLocalStorage]);
+
+  const goToSettings = useCallback(() => {
     setOpen(false);
     navigate('/settings');
-  };
+  }, [navigate]);
+
+  const toggleDrawer = useCallback(() => {
+    setOpen(prev => !prev);
+  }, []);
 
   return (
     <>
       <Tooltip title="Theme Settings" arrow>
         <IconButton 
           color="inherit" 
-          onClick={() => setOpen(true)}
+          onClick={toggleDrawer}
           sx={{ 
             position: 'fixed', 
             right: { xs: 16, sm: 20 }, 
             bottom: { xs: 16, sm: 20 },
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.contrastText,
+            backgroundColor: 'primary.main',
+            color: 'primary.contrastText',
             '&:hover': {
-              backgroundColor: theme.palette.primary.dark,
+              backgroundColor: 'primary.dark',
             },
             zIndex: theme.zIndex.drawer + 1,
             width: { xs: 40, sm: 48 },
             height: { xs: 40, sm: 48 },
-            boxShadow: theme.shadows[6],
-            transition: theme.transitions.create(
-              ['background-color', 'box-shadow', 'width', 'height'],
-              { duration: theme.transitions.duration.standard }
-            ),
+            boxShadow: 6,
           }}
         >
-          <SettingsIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
+          <SettingsIcon />
         </IconButton>
       </Tooltip>
 
       <Drawer
         anchor={isMobile ? "bottom" : "right"}
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={toggleDrawer}
         PaperProps={{
           sx: {
             width: isMobile ? '100%' : { xs: '100%', sm: 360 },
@@ -102,34 +107,24 @@ export default function ThemeSettings() {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h5" fontWeight="bold">Quick Settings</Typography>
-          <IconButton onClick={() => setOpen(false)} edge="end" aria-label="close">
+          <IconButton onClick={toggleDrawer} edge="end" aria-label="close">
             <CloseIcon />
           </IconButton>
         </Box>
 
         <Divider sx={{ my: 2 }} />
 
-        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-          Mode
-        </Typography>
+        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>Mode</Typography>
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <FormControlLabel 
-              control={
-                <Switch 
-                  checked={mode === 'dark'} 
-                  onChange={toggleColorMode} 
-                  color="primary" 
-                />
-              } 
+              control={<Switch checked={mode === 'dark'} onChange={toggleColorMode} color="primary" />} 
               label={mode === 'dark' ? "Dark Mode" : "Light Mode"} 
             />
           </CardContent>
         </Card>
 
-        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-          Content Width
-        </Typography>
+        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>Content Width</Typography>
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <FormControl component="fieldset" fullWidth>
@@ -149,15 +144,11 @@ export default function ThemeSettings() {
           </CardContent>
         </Card>
 
-        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-          Font Size
-        </Typography>
+        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>Font Size</Typography>
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Box sx={{ px: 1 }}>
-              <Typography variant="body2" gutterBottom>
-                {fontSize}px
-              </Typography>
+              <Typography variant="body2" gutterBottom>{fontSize}px</Typography>
               <Slider
                 value={fontSize}
                 onChange={(_, newValue) => setFontSize(newValue as number)}
@@ -166,15 +157,12 @@ export default function ThemeSettings() {
                 min={12}
                 max={18}
                 valueLabelDisplay="auto"
-                aria-labelledby="font-size-slider"
               />
             </Box>
           </CardContent>
         </Card>
 
-        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-          Primary Color
-        </Typography>
+        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>Primary Color</Typography>
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <FormControl fullWidth size="small">
@@ -182,7 +170,6 @@ export default function ThemeSettings() {
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
                 displayEmpty
-                inputProps={{ 'aria-label': 'Primary color' }}
               >
                 <MenuItem value="#646cff">Default Purple</MenuItem>
                 <MenuItem value="#2196f3">Blue</MenuItem>
@@ -198,21 +185,20 @@ export default function ThemeSettings() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Button 
             variant="contained" 
-            fullWidth 
-            onClick={() => setOpen(false)}
+            onClick={goToSettings}
+            fullWidth
           >
-            Apply Quick Settings
+            More Settings
           </Button>
-
           <Button 
             variant="outlined" 
-            fullWidth 
-            onClick={goToSettings}
+            onClick={toggleDrawer} 
+            fullWidth
           >
-            Advanced Settings
+            Close
           </Button>
         </Box>
       </Drawer>
     </>
   );
-} 
+}); 

@@ -19,25 +19,23 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
   // Use system preference as default
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   
-  // Check localStorage for saved preference
-  const getSavedMode = (): PaletteMode => {
+  // Check localStorage for saved preference only once on mount
+  const [mode, setMode] = useState<PaletteMode>(() => {
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('theme-mode');
       if (savedMode === 'light' || savedMode === 'dark') {
-        return savedMode;
+        return savedMode as PaletteMode;
       }
     }
     return prefersDarkMode ? 'dark' : 'light';
-  };
-
-  const [mode, setMode] = useState<PaletteMode>(getSavedMode());
+  });
 
   // Update localStorage when mode changes
   useEffect(() => {
     localStorage.setItem('theme-mode', mode);
   }, [mode]);
 
-  // Listen for system preference changes
+  // Listen for system preference changes only if no user preference exists
   useEffect(() => {
     const savedMode = localStorage.getItem('theme-mode');
     if (!savedMode) {
@@ -45,13 +43,14 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
     }
   }, [prefersDarkMode]);
 
+  // Memoize the color mode context to prevent unnecessary re-renders
   const colorMode = useMemo(() => ({
     toggleColorMode: () => setMode((prev) => (prev === "light" ? "dark" : "light")),
     mode,
     setMode
   }), [mode]);
 
-  // Use our centralized theme configuration
+  // Memoize theme to prevent unnecessary re-creation
   const theme = useMemo(() => createTheme(getThemeOptions(mode)), [mode]);
 
   return (
