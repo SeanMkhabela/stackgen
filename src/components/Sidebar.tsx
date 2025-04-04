@@ -18,6 +18,7 @@ import {
   IconSettings2,
   IconArrowLeft,
   IconArrowRight,
+  IconUser,
 } from "@tabler/icons-react";
 import { Link, useLocation } from "react-router-dom";
 import '../styles/Sidebar.css';
@@ -30,6 +31,7 @@ const navItems = [
   { label: "Home", icon: <IconHome2 />, path: "/home" },
   { label: "Start New", icon: <IconPlus />, path: "/select-stack" },
   { label: "Result", icon: <IconCheckupList />, path: "/result" },
+  { label: "Profile", icon: <IconUser />, path: "/profile" },
   { label: "Settings", icon: <IconSettings2 />, path: "/settings" },
 ];
 

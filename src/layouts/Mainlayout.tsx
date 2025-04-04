@@ -64,7 +64,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           }}
         >
           <Toolbar /> {/* Spacer for fixed header */}
-          <Box component="main" sx={{ flexGrow: 1, px: 3, py: 2, pb: 4 }}>
+          <Box component="main" sx={{ flexGrow: 1, py: 2, pb: 4, mr: 4 }}>
             {children || <Outlet />}
           </Box>
         </Box>

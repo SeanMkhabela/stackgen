@@ -55,6 +55,8 @@ export default function SignIn() {
     setIsSubmitting(true);
     try {
       await new Promise((res) => setTimeout(res, 1000));
+      // Store email in localStorage for profile page to use
+      localStorage.setItem('userEmail', formData.email);
       navigate('/home');
     } catch {
       setErrors((prev) => ({ ...prev, server: 'Invalid email or password' }));
@@ -65,6 +67,8 @@ export default function SignIn() {
 
   // Dev shortcut to bypass login
   const handleDevBypass = () => {
+    // Set a dummy email for development
+    localStorage.setItem('userEmail', 'dev@example.com');
     navigate('/home');
   };
 
