@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Box, Typography, useTheme } from "@mui/material";
+import { AppBar, Toolbar, Box, Typography, useTheme, Container } from "@mui/material";
 import { GithubIcon, TwitterIcon, MessageCircle } from "lucide-react";
 
 export default function Footer() {
@@ -16,14 +16,13 @@ export default function Footer() {
         color: "white",
         boxShadow: "none",
         mt: "auto",
-        width: "100vw",
-        maxWidth: "100%",
-        left: 0,
-        marginLeft: 0,
-        right: 0,
+        minWidth: "99.2vw",
+        overflowX: "hidden",
+        position: "relative",
         zIndex: 1300,
       }}
     >
+        <Container maxWidth="lg">
       <Toolbar
         sx={{
           flexDirection: "column",
@@ -104,88 +103,89 @@ export default function Footer() {
           </Typography>
         </Box>
 
-        {/* Bottom section with legal & icons */}
-        <Box
-          sx={{
-            borderTop: "1px solid rgba(255,255,255,0.2)",
-            pt: 3,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-            width: "100%",
-            maxWidth: "1200px",
-            mx: "auto",
-          }}
-        >
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "rgba(255,255,255,0.7)",
-                "&:hover": {
-                  color: "white",
+          {/* Bottom section with legal & icons */}
+          <Box
+            sx={{
+              borderTop: "1px solid rgba(255,255,255,0.2)",
+              pt: 3,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 2,
+              width: "100%",
+              maxWidth: "1200px",
+              mx: "auto",
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  "&:hover": {
+                    color: "white",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                Terms of Service
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  "&:hover": {
+                    color: "white",
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                Privacy Policy
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+              <TwitterIcon
+                size={20}
+                style={{
+                  color: "rgba(255,255,255,0.7)",
                   cursor: "pointer",
-                },
-              }}
-            >
-              Terms of Service
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "rgba(255,255,255,0.7)",
-                "&:hover": {
-                  color: "white",
+                }}
+              />
+              <GithubIcon
+                size={20}
+                style={{
+                  color: "rgba(255,255,255,0.7)",
                   cursor: "pointer",
-                },
-              }}
-            >
-              Privacy Policy
-            </Typography>
+                }}
+              />
+              <MessageCircle
+                size={20}
+                style={{
+                  color: "rgba(255,255,255,0.7)",
+                  cursor: "pointer",
+                }}
+              />
+            </Box>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-            <TwitterIcon
-              size={20}
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                cursor: "pointer",
-              }}
-            />
-            <GithubIcon
-              size={20}
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                cursor: "pointer",
-              }}
-            />
-            <MessageCircle
-              size={20}
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                cursor: "pointer",
-              }}
-            />
-          </Box>
-        </Box>
-
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-            textAlign: "right",
-            mt: 2,
-            color: "rgba(255,255,255,0.7)",
-            maxWidth: "1200px",
-            mx: "auto",
-            width: "100%",
-          }}
-        >
-          © {new Date().getFullYear()} StackGen, Inc.
-        </Typography>
-      </Toolbar>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              textAlign: "right",
+              mt: 2,
+              color: "rgba(255,255,255,0.7)",
+              maxWidth: "1200px",
+              mx: "auto",
+              width: "100%",
+            }}
+          >
+            © {new Date().getFullYear()} StackGen, Inc.
+          </Typography>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 }

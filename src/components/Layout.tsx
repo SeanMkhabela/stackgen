@@ -55,7 +55,14 @@ export default function Layout({ children }: LayoutProps) {
     >
       <CssBaseline />
       <Header />
-      <Box sx={{ display: "flex", flex: 1, position: "relative" }}>
+      <Box 
+        sx={{ 
+          display: "flex", 
+          flex: 1, 
+          position: "relative",
+          overflow: "hidden"
+        }}
+      >
         <Sidebar />
         <Box
           component="main"
@@ -67,26 +74,17 @@ export default function Layout({ children }: LayoutProps) {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Toolbar />
           {children}
         </Box>
       </Box>
-      <Box 
-        component="footer"
-        sx={{
-          width: '100%',
-          position: 'relative',
-          left: 0,
-          right: 0,
-          marginLeft: 0,
-          marginTop: "auto",
-          zIndex: 1200, // Ensure footer is above sidebar
-        }}
-      >
-        <Footer />
-      </Box>
+      <Footer />
+      
     </Box>
   );
 }
