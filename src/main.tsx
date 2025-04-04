@@ -5,6 +5,7 @@ import './index.css'
 import App from './App'
 import ThemeProviderWrapper from './components/ThemeProvider'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { StackProvider } from './context/StackContext'
 // Import only the fonts we need
 import "@fontsource/poppins/400.css"
 import "@fontsource/poppins/700.css"
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProviderWrapper>
       <Router>
-        <App />
+        <StackProvider>
+          <App />
+        </StackProvider>
       </Router>
     </ThemeProviderWrapper>
   </StrictMode>,

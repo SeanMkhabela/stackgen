@@ -16,6 +16,10 @@ import Dashboard from './pages/Dashboard'
 import SelectStack from './pages/SelectStack'
 import Result from './pages/Result'
 import Settings from './pages/Settings'
+import Profile from './pages/Profile'
+
+// Route Protection
+import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
   return (
@@ -33,8 +37,14 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/select-stack" element={<SelectStack />} />
-        <Route path="/result" element={<Result />} />
+        
+        {/* Protected routes - requires stack selection */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/result" element={<Result />} />
+        </Route>
+        
         <Route path="/settings" element={<Settings />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   )
