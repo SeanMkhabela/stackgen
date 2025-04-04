@@ -8,6 +8,8 @@ import {
   useTheme,
   IconButton,
   Box,
+  Tooltip,
+  useMediaQuery,
 } from "@mui/material";
 import {
   IconHome2,
@@ -25,7 +27,7 @@ export const drawerWidth = 240;
 export const collapsedWidth = 65;
 
 const navItems = [
-  { label: "Home", icon: <IconHome2 />, path: "/" },
+  { label: "Home", icon: <IconHome2 />, path: "/home" },
   { label: "Start New", icon: <IconPlus />, path: "/select-stack" },
   { label: "Result", icon: <IconCheckupList />, path: "/result" },
   { label: "Settings", icon: <IconSettings2 />, path: "/settings" },
@@ -36,35 +38,13 @@ export default function Sidebar() {
   const isDark = theme.palette.mode === "dark";
   const location = useLocation();
   const activePage = location.pathname;
-  const [collapsed, setCollapsed] = useState(false);
-  const [sidebarHeight, setSidebarHeight] = useState('calc(100vh - 250px)');
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [collapsed, setCollapsed] = useState(isMobile);
 
+  // Auto-collapse on mobile devices
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setCollapsed(true);
-      }
-      
-      // Calculate the height to leave space for the footer
-      const footerHeight = document.querySelector('footer')?.clientHeight || 250;
-      setSidebarHeight(`calc(100vh - ${footerHeight}px)`);
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    // Set up a mutation observer to check when footer dimensions change
-    const footerObserver = new MutationObserver(handleResize);
-    const footer = document.querySelector('footer');
-    if (footer) {
-      footerObserver.observe(footer, { attributes: true, childList: true, subtree: true });
-    }
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      footerObserver.disconnect();
-    };
-  }, []);
+    setCollapsed(isMobile);
+  }, [isMobile]);
 
   const toggleDrawer = () => {
     setCollapsed(!collapsed);
@@ -76,71 +56,91 @@ export default function Sidebar() {
       sx={{
         width: collapsed ? collapsedWidth : drawerWidth,
         flexShrink: 0,
-        position: 'absolute',
-        height: 'auto',
-        "& .MuiDrawer-paper": {
-          position: 'relative',
+        '& .MuiDrawer-paper': {
           width: collapsed ? collapsedWidth : drawerWidth,
           boxSizing: "border-box",
           backgroundColor: isDark
-            ? "rgba(15,15,30,0.8)"
-            : "rgba(250,250,255,0.8)",
+            ? theme.palette.background.paper
+            : theme.palette.background.paper,
           backdropFilter: "blur(6px)",
           borderRight: `1px solid ${
             isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"
           }`,
-          transition: theme.transitions.create("width", {
+          transition: theme.transitions.create(["width", "border-color"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
           }),
           overflowX: "hidden",
-          overflowY: "auto",
-          height: sidebarHeight,
-          maxHeight: sidebarHeight,
+          height: '100%',
+          boxShadow: theme.shadows[1],
         },
       }}
     >
       <Toolbar />
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
-        <IconButton onClick={toggleDrawer} color="primary">
-          {collapsed ? <IconArrowRight size={18} /> : <IconArrowLeft size={18} />}
-        </IconButton>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          p: 1,
+          borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"}`,
+          mb: 1,
+        }}
+      >
+        <Tooltip title={collapsed ? "Expand" : "Collapse"} placement="right">
+          <IconButton onClick={toggleDrawer} color="primary" size="small">
+            {collapsed ? <IconArrowRight size={18} /> : <IconArrowLeft size={18} />}
+          </IconButton>
+        </Tooltip>
       </Box>
-      <List>
+      <List sx={{ px: 1 }}>
         {navItems.map(({ label, icon, path }) => (
-          <ListItemButton
+          <Tooltip 
             key={path}
-            component={Link}
-            to={path}
-            selected={activePage === path}
-            sx={{
-              minHeight: 48,
-              justifyContent: collapsed ? "center" : "initial",
-              px: 2.5,
-              "&:hover": {
-                backgroundColor: isDark
-                  ? "rgba(255,255,255,0.04)"
-                  : "rgba(0,0,0,0.04)",
-              },
-              "&.Mui-selected": {
-                backgroundColor: isDark
-                  ? "rgba(100,108,255,0.25)"
-                  : "rgba(100,108,255,0.15)",
-                borderRight: "4px solid #646cff",
-              },
-            }}
+            title={collapsed ? label : ""}
+            placement="right"
+            disableHoverListener={!collapsed}
           >
-            <ListItemIcon
+            <ListItemButton
+              component={Link}
+              to={path}
+              selected={activePage === path}
               sx={{
-                minWidth: 0,
-                mr: collapsed ? 'auto' : 3,
-                justifyContent: 'center',
+                minHeight: 48,
+                justifyContent: collapsed ? "center" : "initial",
+                px: 2.5,
+                borderRadius: theme.shape.borderRadius,
+                mb: 0.5,
+                "&:hover": {
+                  backgroundColor: isDark
+                    ? "rgba(255,255,255,0.04)"
+                    : "rgba(0,0,0,0.04)",
+                },
+                "&.Mui-selected": {
+                  backgroundColor: isDark
+                    ? "rgba(100,108,255,0.25)"
+                    : "rgba(100,108,255,0.15)",
+                  borderRight: `4px solid ${theme.palette.primary.main}`,
+                },
               }}
             >
-              {icon}
-            </ListItemIcon>
-            {!collapsed && <ListItemText primary={label} />}
-          </ListItemButton>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: collapsed ? 'auto' : 3,
+                  justifyContent: 'center',
+                  color: activePage === path ? theme.palette.primary.main : 'inherit',
+                }}
+              >
+                {icon}
+              </ListItemIcon>
+              {!collapsed && <ListItemText primary={label} sx={{ 
+                opacity: 1,
+                transition: theme.transitions.create('opacity', {
+                  duration: theme.transitions.duration.standard
+                })
+              }} />}
+            </ListItemButton>
+          </Tooltip>
         ))}
       </List>
     </Drawer>
