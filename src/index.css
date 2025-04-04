@@ -87,3 +87,53 @@ button:focus-visible {
         background-color: #f9f9f9;
     }
 }
+
+
+/* Guided Wizard Styles */
+
+.wizard-highlight {
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 0 0 6px rgba(100, 108, 255, 0.3);
+    border-radius: 8px;
+}
+
+
+/* Hand-drawn effect for step connections in wizard */
+
+.step-connection {
+    stroke-dasharray: 5;
+}
+
+
+/* Fix for MUI Dialog transitions */
+
+.MuiDialog-container {
+    opacity: 1 !important;
+}
+
+.MuiDialog-paper {
+    will-change: transform, opacity;
+    transform-origin: center center;
+}
+
+.MuiDialog-container .MuiPaper-root {
+    transition: all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+}
+
+
+/* Ensure dialog content is rendered properly */
+
+.MuiDialog-paper [role="dialog"] {
+    contain: content;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+
+/* Disable transitions when needed to prevent measurement errors */
+
+.disable-transitions * {
+    transition: none !important;
+    animation: none !important;
+}
