@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FaGoogle, FaApple } from 'react-icons/fa';
+import { signUp } from '../utils/api';
 
 interface FormData {
   email: string;
@@ -80,10 +81,16 @@ export default function SignUp() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      await new Promise((res) => setTimeout(res, 1000));
+      const { message } = await signUp(formData.email, formData.password);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(message); // optional
+      }
       navigate('/signin');
-    } catch {
-      setErrors((prev) => ({ ...prev, server: 'Registration failed. Please try again.' }));
+    } catch(err: unknown) {
+      setErrors((prev) => ({ 
+        ...prev, 
+        server: err instanceof Error ? err.message : 'An unknown error occurred' 
+      }));
     } finally {
       setIsSubmitting(false);
     }

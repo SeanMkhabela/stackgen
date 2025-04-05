@@ -1,19 +1,55 @@
-import { Typography, Card, CardContent, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
+import {
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  
+} from '@mui/material';
 import { PageLayout } from '../components/ResponsiveLayout';
+import { fetchPing } from '../utils/api';
 
 export default function Dashboard() {
+  const [message, setMessage] = useState('');
+  
+
+  useEffect(() => {
+    fetchPing().then((res) => setMessage(res.message));
+  }, []);
+
+
+
   return (
     <PageLayout>
       <Box sx={{ width: '100%', py: 4 }}>
         <Typography variant="h4" gutterBottom>
           Welcome to StackGen 🎉
         </Typography>
-        
+
         <Typography variant="body1" paragraph>
           Your modern development environment is ready!
         </Typography>
+
+        {message && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Backend says: {message}
+          </Typography>
+        )}
+
         
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }, gap: 3, mt: 2 }}>
+
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'repeat(2, 1fr)',
+              lg: 'repeat(3, 1fr)',
+            },
+            gap: 3,
+            mt: 4,
+          }}
+        >
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -24,7 +60,7 @@ export default function Dashboard() {
               </Typography>
             </CardContent>
           </Card>
-          
+
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -35,7 +71,7 @@ export default function Dashboard() {
               </Typography>
             </CardContent>
           </Card>
-          
+
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -51,4 +87,3 @@ export default function Dashboard() {
     </PageLayout>
   );
 }
-  
