@@ -38,7 +38,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useStack } from "../context/StackContext";
 import { useWizard } from "../context/WizardContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import GuidedSetupWizard from "../components/GuidedSetupWizard";
 
 // Define form structure with types
@@ -60,6 +60,9 @@ interface FormErrors {
   backend?: string;
   general?: string;
 }
+
+// Message type for assistant messages
+type MessageType = "info" | "warning" | "success";
 
 // Stack compatibility data
 interface CompatibilityData {
@@ -159,7 +162,7 @@ export default function SelectStack() {
   // Assistant message state
   const [assistantMessage, setAssistantMessage] = useState<{
     message: string;
-    type: "info" | "warning" | "success";
+    type: MessageType;
   }>({
     message: "Select a frontend and backend to get started. I'll help you choose compatible technologies.",
     type: "info"
@@ -177,15 +180,51 @@ export default function SelectStack() {
     }
   }, [hasSeenWizard, openWizard, markWizardAsSeen]);
 
-  // Update assistant message when selections change
-  useEffect(() => {
-    setAssistantMessage(getAssistantMessage(formData));
-  }, [formData.frontend, formData.backend, formData.features]);
+  // Helper function to get suggested features
+  const getSuggestedFeatures = useCallback((
+    recommendedFeatures: Record<string, boolean> | undefined, 
+    currentFeatures: StackFormData['features']
+  ) => {
+    if (!recommendedFeatures) return [];
+    
+    return Object.entries(recommendedFeatures)
+      .filter(([key, value]) => 
+        value && !currentFeatures[key as keyof typeof currentFeatures]
+      )
+      .map(([key]) => key);
+  }, []);
+
+  // Helper function for when both frontend and backend are selected
+  const getBothSelectedMessage = useCallback((frontend: string, backend: string, features: StackFormData['features']) => {
+    const frontendData = stackCompatibility[frontend];
+    
+    // Not compatible
+    if (!frontendData?.compatibleWith?.includes(backend)) {
+      return {
+        message: `Warning: ${frontend} and ${backend} aren't commonly used together. You might face integration challenges.`,
+        type: "warning" as const
+      };
+    }
+    
+    // Compatible technologies
+    let message = frontendData.recommendations[backend] || "Good choice! These technologies work well together.";
+    
+    // Add feature suggestions if any
+    const suggestedFeatures = getSuggestedFeatures(frontendData.features, features);
+    if (suggestedFeatures.length > 0) {
+      message = `${message} Consider enabling ${suggestedFeatures.join(", ")} for this stack.`;
+    }
+    
+    return {
+      message,
+      type: "success" as const
+    };
+  }, [getSuggestedFeatures]);
 
   // Helper function to generate assistant messages based on form state
-  const getAssistantMessage = (form: StackFormData): {
+  const getAssistantMessage = useCallback((form: StackFormData): {
     message: string;
-    type: "info" | "warning" | "success";
+    type: MessageType;
   } => {
     // Both empty
     if (!form.frontend && !form.backend) {
@@ -216,51 +255,15 @@ export default function SelectStack() {
     
     // Both frontend and backend selected
     return getBothSelectedMessage(form.frontend, form.backend, form.features);
-  };
-  
-  // Helper function for when both frontend and backend are selected
-  const getBothSelectedMessage = (frontend: string, backend: string, features: StackFormData['features']) => {
-    const frontendData = stackCompatibility[frontend];
-    
-    // Not compatible
-    if (!frontendData || !frontendData.compatibleWith.includes(backend)) {
-      return {
-        message: `Warning: ${frontend} and ${backend} aren't commonly used together. You might face integration challenges.`,
-        type: "warning" as const
-      };
-    }
-    
-    // Compatible technologies
-    let message = frontendData.recommendations[backend] || "Good choice! These technologies work well together.";
-    
-    // Add feature suggestions if any
-    const suggestedFeatures = getSuggestedFeatures(frontendData.features, features);
-    if (suggestedFeatures.length > 0) {
-      message = `${message} Consider enabling ${suggestedFeatures.join(", ")} for this stack.`;
-    }
-    
-    return {
-      message,
-      type: "success" as const
-    };
-  };
-  
-  // Helper function to get suggested features
-  const getSuggestedFeatures = (
-    recommendedFeatures: Record<string, boolean> | undefined, 
-    currentFeatures: StackFormData['features']
-  ) => {
-    if (!recommendedFeatures) return [];
-    
-    return Object.entries(recommendedFeatures)
-      .filter(([key, value]) => 
-        value && !currentFeatures[key as keyof typeof currentFeatures]
-      )
-      .map(([key]) => key);
-  };
+  }, [getBothSelectedMessage]);
+
+  // Update assistant message when selections change
+  useEffect(() => {
+    setAssistantMessage(getAssistantMessage(formData));
+  }, [formData, getAssistantMessage]);
 
   // Helper function to get message background color based on message type
-  const getMessageBackgroundColor = (type: "info" | "warning" | "success") => {
+  const getMessageBackgroundColor = (type: MessageType) => {
     switch (type) {
       case "info":
         return theme.palette.info.light;
@@ -272,7 +275,7 @@ export default function SelectStack() {
   };
   
   // Helper function to get message border color based on message type
-  const getMessageBorderColor = (type: "info" | "warning" | "success") => {
+  const getMessageBorderColor = (type: MessageType) => {
     switch (type) {
       case "info":
         return theme.palette.info.main;
@@ -284,7 +287,7 @@ export default function SelectStack() {
   };
 
   // Helper function to get icon color based on message type
-  const getMessageIconColor = (type: "info" | "warning" | "success") => {
+  const getMessageIconColor = (type: MessageType) => {
     switch (type) {
       case "info":
         return theme.palette.info.dark;
