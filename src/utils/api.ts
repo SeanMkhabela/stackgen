@@ -35,7 +35,7 @@ export const signUp = async (email: string, password: string) => {
     
     try {
       const response = await fetch(
-        `http://localhost:3001/generate-stack?frontend=${frontend}&backend=${backend}`,
+        `${BASE_URL}/generate-stack?frontend=${frontend}&backend=${backend}`,
         {
           method: 'GET',
           mode: 'cors', // 👈 Required for cross-origin
