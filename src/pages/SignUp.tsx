@@ -82,8 +82,10 @@ export default function SignUp() {
     setIsSubmitting(true);
     try {
       const { message } = await signUp(formData.email, formData.password);
-  console.log(message); // optional
-  navigate('/signin');
+      if (process.env.NODE_ENV === 'development') {
+        console.log(message); // optional
+      }
+      navigate('/signin');
     } catch(err: unknown) {
       setErrors((prev) => ({ 
         ...prev, 
