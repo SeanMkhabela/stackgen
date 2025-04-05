@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Box, Typography, Card, CardContent, Switch, FormControlLabel, Divider, Button, RadioGroup, Radio, FormControl, FormLabel, Slider, useTheme, InputLabel, MenuItem, Select, Alert } from "@mui/material";
 import { PageLayout } from '../components/ResponsiveLayout';
-import { ColorModeContext } from '../components/ThemeProvider';
+import { ColorModeContext } from '../context/ColorModeContext';
 
 export default function Settings() {
   const theme = useTheme();

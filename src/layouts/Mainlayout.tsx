@@ -10,7 +10,7 @@ interface MainLayoutProps {
   children?: ReactNode
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
   const [sidebarWidth, setSidebarWidth] = useState(drawerWidth)
 
   // More efficient sidebar width tracking with useCallback
@@ -65,7 +65,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         >
           <Toolbar /> {/* Spacer for fixed header */}
           <Box component="main" sx={{ flexGrow: 1, py: 2, pb: 4, mr: 4 }}>
-            {children || <Outlet />}
+            {children ?? <Outlet />}
           </Box>
         </Box>
       </Box>
