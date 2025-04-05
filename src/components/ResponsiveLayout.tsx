@@ -34,7 +34,7 @@ export default function ResponsiveLayout({
 }: Readonly<ResponsiveLayoutProps>) {
   // Get the content width from theme if available
   const theme = useTheme();
-  const contentWidth = theme.contentWidth || maxWidth;
+  const contentWidth = theme.contentWidth ?? maxWidth;
   
   return (
     <Box
@@ -79,7 +79,7 @@ export function CenteredContent({
   maxWidth?: ContentWidth;
 }>) {
   const theme = useTheme();
-  const contentWidth = theme.contentWidth || maxWidth;
+  const contentWidth = theme.contentWidth ?? maxWidth;
   
   return (
     <ResponsiveLayout maxWidth={contentWidth} fullHeight centerContent>
@@ -97,7 +97,7 @@ export function PageLayout({
   maxWidth?: ContentWidth;
 }>) {
   const theme = useTheme();
-  const contentWidth = theme.contentWidth || maxWidth;
+  const contentWidth = theme.contentWidth ?? maxWidth;
   
   return (
     <ResponsiveLayout maxWidth={contentWidth} fullHeight>
