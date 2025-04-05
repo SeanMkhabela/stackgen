@@ -8,7 +8,7 @@ const TestComponent = () => {
   
   return (
     <div>
-      <div data-testid="stack-value">{selectedStack || 'none'}</div>
+      <div data-testid="stack-value">{selectedStack ?? 'none'}</div>
       <div data-testid="is-selected">{isStackSelected() ? 'selected' : 'not-selected'}</div>
       <button 
         onClick={() => setSelectedStack('react-express')} 
