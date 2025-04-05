@@ -1,54 +1,82 @@
-# React + TypeScript + Vite
+# 🚀 StackGen Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue)
+![Made with ❤️](https://img.shields.io/badge/made%20with-%E2%9D%A4-red)
 
-Currently, two official plugins are available:
+> A modern, responsive frontend built with **React 19**, **Vite**, and **Material UI** — the visual interface for generating full-stack boilerplates in one click.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🌟 Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ⚡️ Built with **Vite** and **React 19**
+- 🎨 Stylish UI with **Material UI v5**
+- 🌙 Light/Dark mode toggle
+- ⚙️ Stack selection (React, Express, etc.)
+- 📦 ZIP download of full frontend + backend projects
+- 🧠 Integrated with a Fastify + Mongo backend
+- 💬 Friendly error messages and toast feedback
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧱 Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Frontend         | Styling           | Icons               | UX               |
+|------------------|-------------------|----------------------|------------------|
+| React + Vite     | Tailwind + MUI    | Tabler / Lucide      | React Hot Toast  |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/SeanMkhabela/stackgen-frontend.git
+cd stackgen-frontend
+2. Install dependencies
+bash
+
+npm install
+3. Set environment variable
+Create a .env file:
+
+env
+
+VITE_API_URL=http://localhost:3001
+Or use your deployed backend (e.g. Render):
+VITE_API_URL=https://stackgen-backend.onrender.com
+
+4. Start dev server
+bash
+
+npm run dev
+Open http://localhost:5173 to view it in the browser.
+
+🎁 Screenshots
+Coming soon... or drop some UI previews here!
+
+🤝 Contributing
+Contributions, issues and feature requests are welcome!
+
+If you'd like to contribute:
+
+Fork the repo
+
+Create a branch (git checkout -b feature/my-feature)
+
+Commit your changes
+
+Push and open a pull request
+
+📄 License
+This project is open-source under the MIT License.
+Feel free to use, modify, and share with proper credit.
+
+💬 Contact
+Made with ❤️ by Sean Mkhabela
+Connect with me: @seanm.dev
+
+

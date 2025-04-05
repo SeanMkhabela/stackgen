@@ -1,6 +1,9 @@
 import { Box, Typography, Paper, Card, CardContent, Button, useTheme, Chip, Stack, Divider } from "@mui/material";
 import { useStack } from "../context/StackContext";
 import { useNavigate } from "react-router-dom";
+import { downloadGeneratedStack } from "../utils/api";
+import { Toaster } from 'react-hot-toast';
+
 
 // Interface for parsed stack data
 interface ParsedStackData {
@@ -83,6 +86,17 @@ export default function Result() {
   
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Toast container */}
+      <Toaster position="top-center" toastOptions={{
+        style: {
+          background: theme.palette.mode === 'dark' ? '#333' : '#fff',
+          color: theme.palette.mode === 'dark' ? '#fff' : '#333',
+          boxShadow: theme.shadows[3],
+          borderRadius: '8px',
+          padding: '12px 16px',
+        },
+      }} />
+      
       <Typography variant="h4" component="h1" gutterBottom sx={{ 
         fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
         fontWeight: 600,
@@ -201,7 +215,7 @@ export default function Result() {
               The generated code is ready for download or deployment.
             </Typography>
             <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={() => downloadGeneratedStack(stackData.frontend, stackData.backend)}>
                 Download ZIP
               </Button>
               <Button variant="outlined">

@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FaGoogle, FaApple } from 'react-icons/fa';
+import { signIn } from '../utils/api';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -54,13 +55,15 @@ export default function SignIn() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      await new Promise((res) => setTimeout(res, 1000));
-      // Store email in localStorage for profile page to use
+      const { token } = await signIn(formData.email, formData.password);
+      localStorage.setItem('token', token);
       localStorage.setItem('userEmail', formData.email);
       navigate('/home');
-    } catch {
-      setErrors((prev) => ({ ...prev, server: 'Invalid email or password' }));
-    } finally {
+    } catch(err: unknown) {
+      setErrors((prev) => ({ 
+        ...prev, 
+        server: err instanceof Error ? err.message : 'An unknown error occurred' 
+      }));} finally {
       setIsSubmitting(false);
     }
   };
