@@ -94,8 +94,7 @@ export const signUp = async (email: string, password: string) => {
       document.body.appendChild(iframe);
       
       // Set the source to your API endpoint
-      iframe.src = `http://localhost:3001/generate-stack?frontend=${frontend}&backend=${backend}`;
-      
+      iframe.src = `${BASE_URL}/generate-stack?frontend=${frontend}&backend=${backend}`;
       // Listen for load events
       iframe.onload = () => {
         // This may not be 100% reliable for download confirmation
