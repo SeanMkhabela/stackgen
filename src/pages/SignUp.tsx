@@ -143,7 +143,7 @@ export default function SignUp() {
               value={formData.password}
               onChange={handleChange}
               error={Boolean(errors.password)}
-              helperText={errors.password || 'Use 8+ characters including letters, numbers & symbols'}
+              helperText={errors.password ?? 'Use 8+ characters including letters, numbers & symbols'}
               margin="normal"
               InputProps={{
                 endAdornment: (

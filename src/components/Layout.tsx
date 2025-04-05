@@ -8,7 +8,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: Readonly<LayoutProps>) {
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
   const [sidebarWidth, setSidebarWidth] = useState(isSmallScreen ? collapsedWidth : drawerWidth);
 

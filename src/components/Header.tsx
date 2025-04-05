@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography, IconButton, useTheme, Box, Container } from "@mui/material";
 import { IconSun, IconMoon } from "@tabler/icons-react";
 import { useContext } from "react";
-import { ColorModeContext } from "./ThemeProvider";
+import { ColorModeContext } from "../context/ColorModeContext";
 
 export default function Header() {
   const theme = useTheme();
