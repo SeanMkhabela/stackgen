@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
 interface WizardContextType {
   showWizard: boolean;
@@ -16,18 +16,18 @@ export function WizardProvider({ children }: Readonly<{ children: ReactNode }>) 
     return localStorage.getItem('hasSeenWizard') === 'true';
   });
 
-  const openWizard = () => {
+  const openWizard = useCallback(() => {
     setShowWizard(true);
-  };
+  }, []);
 
-  const closeWizard = () => {
+  const closeWizard = useCallback(() => {
     setShowWizard(false);
-  };
+  }, []);
 
-  const markWizardAsSeen = () => {
+  const markWizardAsSeen = useCallback(() => {
     localStorage.setItem('hasSeenWizard', 'true');
     setHasSeenWizard(true);
-  };
+  }, []);
 
   const contextValue = useMemo(() => ({
     showWizard,
@@ -35,7 +35,7 @@ export function WizardProvider({ children }: Readonly<{ children: ReactNode }>) 
     closeWizard,
     hasSeenWizard,
     markWizardAsSeen
-  }), [showWizard, hasSeenWizard]);
+  }), [showWizard, hasSeenWizard, openWizard, closeWizard, markWizardAsSeen]);
 
   return (
     <WizardContext.Provider value={contextValue}>
