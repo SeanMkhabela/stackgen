@@ -102,8 +102,8 @@ export const signUp = async (email: string, password: string) => {
         console.log('Iframe loaded');
       };
       
-      iframe.onerror = (err) => {
-        reject(err);
+      iframe.onerror = () => {
+        reject(new Error('Iframe download failed'));
       };
       
       // Clean up after a delay

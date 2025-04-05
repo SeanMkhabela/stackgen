@@ -61,9 +61,7 @@ export default function Sidebar() {
         '& .MuiDrawer-paper': {
           width: collapsed ? collapsedWidth : drawerWidth,
           boxSizing: "border-box",
-          backgroundColor: isDark
-            ? theme.palette.background.paper
-            : theme.palette.background.paper,
+          backgroundColor: theme.palette.background.paper,
           backdropFilter: "blur(6px)",
           borderRight: `1px solid ${
             isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"
