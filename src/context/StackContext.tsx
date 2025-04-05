@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface StackContextType {
   selectedStack: string | null;
@@ -8,11 +8,11 @@ interface StackContextType {
 
 const StackContext = createContext<StackContextType | undefined>(undefined);
 
-export function StackProvider({ children }: { children: ReactNode }) {
+export function StackProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [selectedStack, setSelectedStack] = useState<string | null>(() => {
     // Initialize from localStorage if available
     const saved = localStorage.getItem('selectedStack');
-    return saved ? saved : null;
+    return saved ?? null;
   });
 
   const isStackSelected = () => {
@@ -27,11 +27,11 @@ export function StackProvider({ children }: { children: ReactNode }) {
 
   return (
     <StackContext.Provider
-      value={{
+      value={useMemo(() => ({
         selectedStack,
         setSelectedStack: handleSetStack,
         isStackSelected
-      }}
+      }), [selectedStack])}
     >
       {children}
     </StackContext.Provider>

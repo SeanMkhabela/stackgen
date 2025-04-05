@@ -10,7 +10,7 @@ export default function Home() {
         fontWeight: 600,
         color: theme.palette.primary.main 
       }}>
-        Welcome to StackGen <span role="img" aria-label="wave">👋</span>
+        Welcome to StackGen <img src="/wave-emoji.png" alt="wave" style={{ width: '1.25rem', height: '1.25rem', verticalAlign: 'middle' }} />
       </Typography>
       
       <Typography variant="body1" paragraph sx={{ mb: 3 }}>

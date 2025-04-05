@@ -20,7 +20,7 @@ export default function Profile() {
   
   // Mock user data - in a real app, this would come from auth context
   const [userData] = useState({
-    email: localStorage.getItem('userEmail') || 'user@example.com',
+    email: localStorage.getItem('userEmail') ?? 'user@example.com',
   });
 
   const handleLogout = async () => {

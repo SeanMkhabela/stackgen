@@ -39,9 +39,9 @@ export default function ForgotPassword() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setIsSuccess(true);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      setErrors({ email: '', server: 'Failed to send reset email. Please try again.' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send reset email. Please try again.';
+      setErrors({ email: '', server: errorMessage });
     } finally {
       setIsSubmitting(false);
     }

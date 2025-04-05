@@ -82,8 +82,7 @@ export default function Footer() {
               style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
             >
               GitHub
-            </a>
-            .
+            </a>.
           </Typography>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 1 }}>
             For questions, feedback or collaboration, reach out at{" "}
@@ -92,11 +91,10 @@ export default function Footer() {
               style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none" }}
             >
               seanmkhabela@icloud.com
-            </a>
-            .
+            </a>.
           </Typography>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 1 }}>
-            Disclaimer: Provided “as is,” without warranty of any kind.
+            Disclaimer: Provided "as is," without warranty of any kind.
           </Typography>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
             <em>Version: 1.0.0</em>

@@ -179,65 +179,121 @@ export default function SelectStack() {
 
   // Update assistant message when selections change
   useEffect(() => {
-    if (!formData.frontend && !formData.backend) {
-      setAssistantMessage({
+    setAssistantMessage(getAssistantMessage(formData));
+  }, [formData.frontend, formData.backend, formData.features]);
+
+  // Helper function to generate assistant messages based on form state
+  const getAssistantMessage = (form: StackFormData): {
+    message: string;
+    type: "info" | "warning" | "success";
+  } => {
+    // Both empty
+    if (!form.frontend && !form.backend) {
+      return {
         message: "Select a frontend and backend to get started. I'll help you choose compatible technologies.",
         type: "info"
-      });
-      return;
+      };
     }
-
-    if (formData.frontend && !formData.backend) {
-      const frontend = stackCompatibility[formData.frontend];
+    
+    // Only frontend selected
+    if (form.frontend && !form.backend) {
+      const frontend = stackCompatibility[form.frontend];
       if (frontend) {
-        setAssistantMessage({
-          message: `Great choice! ${formData.frontend.charAt(0).toUpperCase() + formData.frontend.slice(1)} works well with ${frontend.compatibleWith.join(", ")} backends.`,
+        return {
+          message: `Great choice! ${form.frontend.charAt(0).toUpperCase() + form.frontend.slice(1)} works well with ${frontend.compatibleWith.join(", ")} backends.`,
           type: "info"
-        });
+        };
       }
-      return;
     }
-
-    if (!formData.frontend && formData.backend) {
-      setAssistantMessage({
+    
+    // Only backend selected
+    if (!form.frontend && form.backend) {
+      return {
         message: "Now select a frontend framework to complete your stack.",
         type: "info"
-      });
-      return;
+      };
     }
-
+    
     // Both frontend and backend selected
-    if (formData.frontend && formData.backend) {
-      const frontend = stackCompatibility[formData.frontend];
-      
-      // Check compatibility
-      if (frontend && frontend.compatibleWith.includes(formData.backend)) {
-        setAssistantMessage({
-          message: frontend.recommendations[formData.backend] || "Good choice! These technologies work well together.",
-          type: "success"
-        });
-        
-        // Suggest features
-        if (frontend.features) {
-          const suggestedFeatures = Object.entries(frontend.features)
-            .filter(([key, value]) => value && !formData.features[key as keyof typeof formData.features])
-            .map(([key]) => key);
-            
-          if (suggestedFeatures.length > 0) {
-            setAssistantMessage(prev => ({
-              ...prev,
-              message: `${prev.message} Consider enabling ${suggestedFeatures.join(", ")} for this stack.`
-            }));
-          }
-        }
-      } else {
-        setAssistantMessage({
-          message: `Warning: ${formData.frontend} and ${formData.backend} aren't commonly used together. You might face integration challenges.`,
-          type: "warning"
-        });
-      }
+    return getBothSelectedMessage(form.frontend, form.backend, form.features);
+  };
+  
+  // Helper function for when both frontend and backend are selected
+  const getBothSelectedMessage = (frontend: string, backend: string, features: StackFormData['features']) => {
+    const frontendData = stackCompatibility[frontend];
+    
+    // Not compatible
+    if (!frontendData || !frontendData.compatibleWith.includes(backend)) {
+      return {
+        message: `Warning: ${frontend} and ${backend} aren't commonly used together. You might face integration challenges.`,
+        type: "warning" as const
+      };
     }
-  }, [formData.frontend, formData.backend, formData.features]);
+    
+    // Compatible technologies
+    let message = frontendData.recommendations[backend] || "Good choice! These technologies work well together.";
+    
+    // Add feature suggestions if any
+    const suggestedFeatures = getSuggestedFeatures(frontendData.features, features);
+    if (suggestedFeatures.length > 0) {
+      message = `${message} Consider enabling ${suggestedFeatures.join(", ")} for this stack.`;
+    }
+    
+    return {
+      message,
+      type: "success" as const
+    };
+  };
+  
+  // Helper function to get suggested features
+  const getSuggestedFeatures = (
+    recommendedFeatures: Record<string, boolean> | undefined, 
+    currentFeatures: StackFormData['features']
+  ) => {
+    if (!recommendedFeatures) return [];
+    
+    return Object.entries(recommendedFeatures)
+      .filter(([key, value]) => 
+        value && !currentFeatures[key as keyof typeof currentFeatures]
+      )
+      .map(([key]) => key);
+  };
+
+  // Helper function to get message background color based on message type
+  const getMessageBackgroundColor = (type: "info" | "warning" | "success") => {
+    switch (type) {
+      case "info":
+        return theme.palette.info.light;
+      case "warning":
+        return theme.palette.warning.light;
+      case "success":
+        return theme.palette.success.light;
+    }
+  };
+  
+  // Helper function to get message border color based on message type
+  const getMessageBorderColor = (type: "info" | "warning" | "success") => {
+    switch (type) {
+      case "info":
+        return theme.palette.info.main;
+      case "warning":
+        return theme.palette.warning.main;
+      case "success":
+        return theme.palette.success.main;
+    }
+  };
+
+  // Helper function to get icon color based on message type
+  const getMessageIconColor = (type: "info" | "warning" | "success") => {
+    switch (type) {
+      case "info":
+        return theme.palette.info.dark;
+      case "warning":
+        return theme.palette.warning.dark;
+      case "success":
+        return theme.palette.success.dark;
+    }
+  };
 
   const handleFrontendChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -340,39 +396,17 @@ export default function SelectStack() {
           display: 'flex',
           alignItems: 'center',
           gap: 2,
-          backgroundColor: 
-            assistantMessage.type === "info" 
-              ? theme.palette.info.light 
-              : assistantMessage.type === "warning"
-                ? theme.palette.warning.light
-                : theme.palette.success.light,
-          border: `1px solid ${
-            assistantMessage.type === "info" 
-              ? theme.palette.info.main 
-              : assistantMessage.type === "warning"
-                ? theme.palette.warning.main
-                : theme.palette.success.main
-          }`,
+          backgroundColor: getMessageBackgroundColor(assistantMessage.type),
+          border: `1px solid ${getMessageBorderColor(assistantMessage.type)}`,
         }}
       >
         <RobotIcon 
           sx={{ 
-            color: 
-              assistantMessage.type === "info" 
-                ? theme.palette.info.dark 
-                : assistantMessage.type === "warning"
-                  ? theme.palette.warning.dark
-                  : theme.palette.success.dark 
+            color: getMessageIconColor(assistantMessage.type)
           }} 
         />
         <Typography variant="body1" sx={{ 
-          color: theme.palette.getContrastText(
-            assistantMessage.type === "info" 
-              ? theme.palette.info.light 
-              : assistantMessage.type === "warning"
-                ? theme.palette.warning.light
-                : theme.palette.success.light
-          ),
+          color: theme.palette.getContrastText(getMessageBackgroundColor(assistantMessage.type)),
           flex: 1
         }}>
           {assistantMessage.message}

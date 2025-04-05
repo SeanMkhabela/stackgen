@@ -20,9 +20,9 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material';
-import { ColorModeContext } from './ThemeProvider';
 import { Settings as SettingsIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { ColorModeContext } from '../context/ColorModeContext';
 
 // Memoize the theme settings to prevent unnecessary re-renders
 export default memo(function ThemeSettings() {
@@ -34,15 +34,15 @@ export default memo(function ThemeSettings() {
   
   // Get settings from localStorage with lazy initialization
   const [contentWidth, setContentWidth] = useState(() => 
-    localStorage.getItem('theme-content-width') || 'lg'
+    localStorage.getItem('theme-content-width') ?? 'lg'
   );
   
   const [fontSize, setFontSize] = useState(() => 
-    parseInt(localStorage.getItem('theme-font-size') || '14', 10)
+    parseInt(localStorage.getItem('theme-font-size') ?? '14', 10)
   );
   
   const [primaryColor, setPrimaryColor] = useState(() => 
-    localStorage.getItem('theme-primary-color') || theme.palette.primary.main
+    localStorage.getItem('theme-primary-color') ?? theme.palette.primary.main
   );
   
   // Update localStorage when settings change, using useCallback for better performance

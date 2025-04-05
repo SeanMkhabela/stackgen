@@ -32,8 +32,8 @@ interface WizardStep {
 }
 
 interface GuidedSetupWizardProps {
-  open: boolean;
-  onClose: () => void;
+  readonly open: boolean;
+  readonly onClose: () => void;
 }
 
 export default function GuidedSetupWizard({ open, onClose }: GuidedSetupWizardProps) {

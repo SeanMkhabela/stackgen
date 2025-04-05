@@ -1,31 +1,20 @@
 // ThemeProvider.tsx
-import React, { createContext, useMemo, useState, useEffect } from "react";
-import { ThemeProvider as MUIThemeProvider, createTheme, CssBaseline, PaletteMode, useMediaQuery, Theme, ThemeOptions } from "@mui/material";
+import React, { useMemo, useState, useEffect } from "react";
+import { ThemeProvider as MUIThemeProvider, createTheme, CssBaseline, PaletteMode, useMediaQuery, ThemeOptions } from "@mui/material";
 import { getThemeOptions } from "../styles/theme";
+import { ColorModeContext } from "../context/ColorModeContext";
+
+// Define type alias for content width
+type ContentWidthType = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
 
 // Extend ThemeOptions to include our custom properties
 interface ExtendedThemeOptions extends ThemeOptions {
-  contentWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+  contentWidth?: ContentWidthType;
 }
 
-// Extend Theme to include our custom properties
-interface ExtendedTheme extends Theme {
-  contentWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
-}
+// Module augmentation is now handled in ResponsiveLayout.tsx
 
-type ColorModeContextType = {
-  toggleColorMode: () => void;
-  mode: PaletteMode;
-  setMode: (mode: PaletteMode) => void;
-};
-
-export const ColorModeContext = createContext<ColorModeContextType>({ 
-  toggleColorMode: () => {},
-  mode: 'light',
-  setMode: () => {}
-});
-
-export default function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {
+export default function ThemeProviderWrapper({ children }: Readonly<{ children: React.ReactNode }>) {
   // Use system preference as default
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   
@@ -47,12 +36,12 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
   });
 
   const [primaryColor, setPrimaryColor] = useState<string>(() => {
-    return localStorage.getItem('theme-primary-color') || '#646cff';
+    return localStorage.getItem('theme-primary-color') ?? '#646cff';
   });
 
-  const [contentWidth, setContentWidth] = useState<'xs' | 'sm' | 'md' | 'lg' | 'xl' | false>(() => {
+  const [contentWidth, setContentWidth] = useState<ContentWidthType>(() => {
     const savedWidth = localStorage.getItem('theme-content-width');
-    return (savedWidth as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false) || 'lg';
+    return (savedWidth as ContentWidthType) || 'lg';
   });
 
   // Update localStorage when mode changes
@@ -68,7 +57,7 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
       } else if (e.key === 'theme-primary-color' && e.newValue) {
         setPrimaryColor(e.newValue);
       } else if (e.key === 'theme-content-width' && e.newValue) {
-        setContentWidth(e.newValue as 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false);
+        setContentWidth(e.newValue as ContentWidthType);
       }
     };
 
@@ -113,7 +102,7 @@ export default function ThemeProviderWrapper({ children }: { children: React.Rea
       contentWidth: contentWidth
     };
     
-    return createTheme(customizedThemeOptions) as ExtendedTheme;
+    return createTheme(customizedThemeOptions);
   }, [mode, fontSize, primaryColor, contentWidth]);
 
   return (
