@@ -11,15 +11,13 @@ import {
   Tooltip,
   useMediaQuery,
 } from "@mui/material";
-import {
-  IconHome2,
-  IconPlus,
-  IconCheckupList,
-  IconSettings2,
-  IconArrowLeft,
-  IconArrowRight,
-  IconUser,
-} from "@tabler/icons-react";
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { Link, useLocation } from "react-router-dom";
 import '../styles/Sidebar.css';
 import { useState, useEffect } from "react";
@@ -28,11 +26,31 @@ export const drawerWidth = 240;
 export const collapsedWidth = 65;
 
 const navItems = [
-  { label: "Home", icon: <IconHome2 />, path: "/home" },
-  { label: "Start New", icon: <IconPlus />, path: "/select-stack" },
-  { label: "Result", icon: <IconCheckupList />, path: "/result" },
-  { label: "Profile", icon: <IconUser />, path: "/profile" },
-  { label: "Settings", icon: <IconSettings2 />, path: "/settings" },
+  { 
+    label: "Home", 
+    icon: <HomeRoundedIcon sx={{ fontSize: 24 }} />, 
+    path: "/home" 
+  },
+  { 
+    label: "Start New", 
+    icon: <AddCircleOutlineRoundedIcon sx={{ fontSize: 24 }} />, 
+    path: "/select-stack" 
+  },
+  { 
+    label: "Result", 
+    icon: <AssignmentTurnedInRoundedIcon sx={{ fontSize: 24 }} />, 
+    path: "/result" 
+  },
+  { 
+    label: "Profile", 
+    icon: <AccountCircleRoundedIcon sx={{ fontSize: 24 }} />, 
+    path: "/profile" 
+  },
+  { 
+    label: "Settings", 
+    icon: <SettingsRoundedIcon sx={{ fontSize: 24 }} />, 
+    path: "/settings" 
+  },
 ];
 
 export default function Sidebar() {
@@ -88,7 +106,7 @@ export default function Sidebar() {
       >
         <Tooltip title={collapsed ? "Expand" : "Collapse"} placement="right">
           <IconButton onClick={toggleDrawer} color="primary" size="small">
-            {collapsed ? <IconArrowRight size={18} /> : <IconArrowLeft size={18} />}
+            {collapsed ? <ChevronRightRoundedIcon fontSize="small" /> : <ChevronLeftRoundedIcon fontSize="small" />}
           </IconButton>
         </Tooltip>
       </Box>
@@ -129,6 +147,9 @@ export default function Sidebar() {
                   mr: collapsed ? 'auto' : 3,
                   justifyContent: 'center',
                   color: activePage === path ? theme.palette.primary.main : 'inherit',
+                  transition: theme.transitions.create(['color'], {
+                    duration: theme.transitions.duration.shorter
+                  }),
                 }}
               >
                 {icon}
