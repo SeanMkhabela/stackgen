@@ -1,8 +1,18 @@
 # StackGen Frontend
 
+![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue) ![Status](https://img.shields.io/badge/status-prototype-orange) ![License](https://img.shields.io/badge/license-MIT-green)
+
+> **PROTOTYPE NOTICE**: This project is currently in active development and serves as a portfolio demonstration. Features may be incomplete or subject to change.
+
 A modern web application for generating full-stack project templates with your preferred technologies.
 
 ![StackGen Screenshot](./public/screenshot.png)
+
+## Project Status
+
+**Current Version:** 0.1.0-alpha (Prototype)
+
+This project is being actively developed. It serves as both a functional tool and a portfolio piece demonstrating modern web development practices. Updates are made frequently as new features are implemented and existing ones refined.
 
 ## Features
 
@@ -11,6 +21,7 @@ A modern web application for generating full-stack project templates with your p
 - ⚙️ Configure additional features like TypeScript, ESLint, and Tailwind CSS
 - 📦 Generate and download a pre-configured project scaffold
 - 🧙‍♂️ Get assistance from our built-in coding assistant
+- 📚 Interactive API documentation with Swagger UI
 
 ## Getting Started
 
@@ -45,6 +56,12 @@ npm run dev
 ```
 
 The application will be available at http://localhost:5173.
+
+### API Documentation
+
+Access the interactive API documentation at http://localhost:5173/api-docs
+
+This documentation provides details about the available endpoints, request formats, and responses. It includes information about the prototype status and links to the backend Swagger UI for complete API specifications.
 
 ### Building for Production
 
@@ -106,6 +123,30 @@ StackGen follows a modern React architecture with:
 - **StackContext**: Manages the selected stack configuration
 - **Sidebar**: Navigation and application structure
 - **SelectStack**: Main interface for configuring projects
+
+## Versioning
+
+We use [Semantic Versioning](https://semver.org/) for this project.
+
+- **Current Release**: 0.1.0-alpha (Prototype)
+- **Development Status**: Active development
+- **Last Updated**: April 2025
+
+### Version History
+
+- **0.1.0-alpha** - Initial prototype release with core features
+  - Tech stack selection interface
+  - Project generation functionality
+  - Basic user authentication
+  - API documentation
+
+## Roadmap
+
+- [ ] Enhanced project templates
+- [ ] Custom configuration saving
+- [ ] Template sharing functionality
+- [ ] Collaborative editing features
+- [ ] Advanced code generation using AI
 
 ## Contributing
 

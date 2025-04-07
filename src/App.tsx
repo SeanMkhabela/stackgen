@@ -20,6 +20,7 @@ import Result from './pages/Result'
 import Settings from './pages/Settings'
 import Profile from './pages/Profile'
 import LandingPage from './pages/LandingPage'
+import ApiDocs from './pages/ApiDocs'
 
 // Route Protection
 import ProtectedRoute from './components/ProtectedRoute'
@@ -44,6 +45,7 @@ export default function App() {
           <Routes location={location} key={location.pathname}>
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/api-docs" element={<ApiDocs />} />
             
             {/* Auth routes */}
             <Route element={<AuthLayout />}>
