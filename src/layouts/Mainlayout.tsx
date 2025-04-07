@@ -1,10 +1,11 @@
 // src/layouts/MainLayout.tsx
 import { ReactNode, useEffect, useState, useCallback } from 'react'
 import { Box, CssBaseline, Toolbar } from '@mui/material'
-import Header from '../components/Header'
 import Sidebar, { drawerWidth } from '../components/Sidebar'
 import { Outlet } from 'react-router-dom'
 import ThemeSettings from '../components/ThemeSettings'
+import AuthNavBar from '../components/AuthNavBar'
+import PageTransition from '../components/PageTransition'
 
 interface MainLayoutProps {
   children?: ReactNode
@@ -47,7 +48,7 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
       }}
     >
       <CssBaseline />
-      <Header />
+      <AuthNavBar />
 
       <Box sx={{ display: 'flex', flex: 1 }}>
         <Sidebar />
@@ -65,7 +66,9 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
         >
           <Toolbar /> {/* Spacer for fixed header */}
           <Box component="main" sx={{ flexGrow: 1, py: 2, pb: 4, mr: 4 }}>
-            {children ?? <Outlet />}
+            <PageTransition>
+              {children ?? <Outlet />}
+            </PageTransition>
           </Box>
         </Box>
       </Box>

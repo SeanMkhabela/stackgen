@@ -13,24 +13,18 @@ import {
   Container
 } from '@mui/material';
 import { Person, Logout } from '@mui/icons-material';
+import { useAuth } from '../context/useAuth';
 
 export default function Profile() {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  
-  // Mock user data - in a real app, this would come from auth context
-  const [userData] = useState({
-    email: localStorage.getItem('userEmail') ?? 'user@example.com',
-  });
+  const { user, logout } = useAuth(); // Use the authentication context
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Clear any stored credentials
-      localStorage.removeItem('userEmail');
+      // Call the AuthProvider's logout function
+      logout();
       
       // Redirect to login
       navigate('/signin');
@@ -77,7 +71,7 @@ export default function Profile() {
               Email Address
             </Typography>
             <Typography variant="body1">
-              {userData.email}
+              {user?.email ?? 'Not signed in'}
             </Typography>
           </Box>
           

@@ -1,5 +1,5 @@
 // src/App.tsx
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import ErrorBoundary from './components/ErrorBoundary'
 import NotFound from './pages/NotFound'
 
@@ -19,44 +19,58 @@ import SelectStack from './pages/SelectStack'
 import Result from './pages/Result'
 import Settings from './pages/Settings'
 import Profile from './pages/Profile'
+import LandingPage from './pages/LandingPage'
 
 // Route Protection
 import ProtectedRoute from './components/ProtectedRoute'
 
 // Context Providers
 import { WizardProvider } from './context/WizardContext'
+import { AuthProvider } from './context/AuthProvider'
+import ToastProvider from './components/ToastProvider'
+
+// Animation
+import { AnimatePresence } from 'framer-motion'
 
 export default function App() {
+  const location = useLocation();
+  
   return (
     <ErrorBoundary>
-      <WizardProvider>
-        <Routes>
-          {/* Auth routes */}
-          <Route element={<AuthLayout />}>
-            <Route path="/" element={<SignIn />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-          </Route>
-
-          {/* Main app routes */}
-          <Route element={<MainLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/select-stack" element={<SelectStack />} />
+      <ToastProvider>
+        <AuthProvider>
+          <WizardProvider>
+          <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
             
-            {/* Protected routes - requires stack selection */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/result" element={<Result />} />
+            {/* Auth routes */}
+            <Route element={<AuthLayout />}>
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
-            
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </WizardProvider>
+            {/* Protected routes - require authentication */}
+            <Route element={<ProtectedRoute />}>
+              {/* Main app routes that require login */}
+              <Route element={<MainLayout />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/select-stack" element={<SelectStack />} />
+                <Route path="/result" element={<Result />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          </AnimatePresence>
+          </WizardProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ErrorBoundary>
   )
 }

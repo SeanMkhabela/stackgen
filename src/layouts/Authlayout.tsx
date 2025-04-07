@@ -1,5 +1,6 @@
 import { Box, CssBaseline } from '@mui/material'
 import { Outlet } from 'react-router-dom'
+import PageTransition from '../components/PageTransition'
 
 export default function AuthLayout() {
   return (
@@ -26,7 +27,9 @@ export default function AuthLayout() {
           justifyContent: 'center',
         }}
       >
-        <Outlet />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </Box>
     </Box>
   )
