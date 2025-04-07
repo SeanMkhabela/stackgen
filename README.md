@@ -6,7 +6,11 @@
 
 A modern web application for generating full-stack project templates with your preferred technologies.
 
-![StackGen Screenshot](./public/screenshot.png)
+![image](https://github.com/user-attachments/assets/6bc259c7-0d21-492c-8153-93e449bff4eb)
+![image](https://github.com/user-attachments/assets/3c827d48-f04b-4ea0-abc6-1569da761bed)
+
+
+
 
 ## Project Status
 
