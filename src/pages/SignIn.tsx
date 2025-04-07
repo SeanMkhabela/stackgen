@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -18,15 +18,20 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FaGoogle, FaApple } from 'react-icons/fa';
-import { signIn } from '../utils/api';
+import { useAuth } from '../context/useAuth';
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '', server: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Get the location the user was trying to access before being redirected to login
+  const from = location.state?.from?.pathname || '/home';
 
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -55,24 +60,26 @@ export default function SignIn() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      const { token } = await signIn(formData.email, formData.password);
-      localStorage.setItem('token', token);
-      localStorage.setItem('userEmail', formData.email);
-      navigate('/home');
+      // Use the login function from our auth context
+      await login(formData.email, formData.password);
+      // After successful login, redirect to the page they were trying to access
+      navigate(from, { replace: true });
     } catch(err: unknown) {
       setErrors((prev) => ({ 
         ...prev, 
         server: err instanceof Error ? err.message : 'An unknown error occurred' 
-      }));} finally {
+      }));
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   // Dev shortcut to bypass login
   const handleDevBypass = () => {
-    // Set a dummy email for development
-    localStorage.setItem('userEmail', 'dev@example.com');
-    navigate('/home');
+    // Using a simple login without validation
+    login('dev@example.com', 'password123')
+      .then(() => navigate(from, { replace: true }))
+      .catch(err => console.error('Dev bypass failed:', err));
   };
 
   return (
@@ -125,6 +132,7 @@ export default function SignIn() {
               error={Boolean(errors.password)}
               helperText={errors.password}
               margin="normal"
+              // Using newer pattern instead of deprecated InputProps
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
@@ -155,10 +163,23 @@ export default function SignIn() {
               fullWidth
               type="submit"
               variant="contained"
-              sx={{ mt: 3, py: 1.5 }}
+              sx={{ 
+                mt: 3, 
+                py: 1.5,
+                position: 'relative',
+                minHeight: '42px',
+                '& .MuiCircularProgress-root': {
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px'
+                }
+              }}
               disabled={isSubmitting}
             >
-              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+              <span style={{ visibility: isSubmitting ? 'hidden' : 'visible' }}>Sign In</span>
+              {isSubmitting && <CircularProgress size={24} color="inherit" />}
             </Button>
             <Divider sx={{ my: 3 }}>Or with</Divider>
             <Box sx={{ display: 'flex', gap: 2 }}>

@@ -1,5 +1,7 @@
 import { AppBar, Toolbar, Box, Typography, useTheme, Container } from "@mui/material";
-import { GithubIcon, TwitterIcon, MessageCircle } from "lucide-react";
+import GitHubIcon from '@mui/icons-material/GitHub';
+import XIcon from '@mui/icons-material/X';
+import ChatIcon from '@mui/icons-material/Chat';
 
 export default function Footer() {
   const theme = useTheme();
@@ -59,11 +61,14 @@ export default function Footer() {
             StackGen
           </Typography>
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)" }}>
-            Scaffold smarter, build faster.
+            Generate fullstack boilerplate codebases in seconds.
+          </Typography>
+          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mt: 1 }}>
+            A tech stack configurator and project scaffold builder — with superpowers 🚀
           </Typography>
         </Box>
 
-        {/* Personal Dev Info / Disclaimer / Contact, etc. */}
+        {/* Who it's for section */}
         <Box
           sx={{
             width: "100%",
@@ -72,6 +77,20 @@ export default function Footer() {
             mb: 4,
           }}
         >
+          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 2, fontWeight: 600 }}>
+            Who StackGen is for:
+          </Typography>
+          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 1, display: 'flex', alignItems: 'center' }}>
+            <Box component="span" sx={{ mr: 1 }}>🧑‍💻</Box> Developers who want to skip setup and start building
+          </Typography>
+          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 1, display: 'flex', alignItems: 'center' }}>
+            <Box component="span" sx={{ mr: 1 }}>🧑‍🏫</Box> Students needing boilerplate for projects or tutorials
+          </Typography>
+          <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 3, display: 'flex', alignItems: 'center' }}>
+            <Box component="span" sx={{ mr: 1 }}>🧑‍💼</Box> Teams who want standardized starting points
+          </Typography>
+          
+          {/* Personal Dev Info / Disclaimer */}
           <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.8)", mb: 1 }}>
             <strong>Built and maintained by a solo developer.</strong> This is a personal project, not a corporate product.
           </Typography>
@@ -144,25 +163,34 @@ export default function Footer() {
             </Box>
 
             <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-              <TwitterIcon
-                size={20}
-                style={{
+              <XIcon
+                sx={{
                   color: "rgba(255,255,255,0.7)",
                   cursor: "pointer",
+                  fontSize: 20,
+                  '&:hover': {
+                    color: 'white'
+                  }
                 }}
               />
-              <GithubIcon
-                size={20}
-                style={{
+              <GitHubIcon
+                sx={{
                   color: "rgba(255,255,255,0.7)",
                   cursor: "pointer",
+                  fontSize: 20,
+                  '&:hover': {
+                    color: 'white'
+                  }
                 }}
               />
-              <MessageCircle
-                size={20}
-                style={{
+              <ChatIcon
+                sx={{
                   color: "rgba(255,255,255,0.7)",
                   cursor: "pointer",
+                  fontSize: 20,
+                  '&:hover': {
+                    color: 'white'
+                  }
                 }}
               />
             </Box>

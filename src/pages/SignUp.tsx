@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FaGoogle, FaApple } from 'react-icons/fa';
-import { signUp } from '../utils/api';
+import { useAuth } from '../context/useAuth';
 
 interface FormData {
   email: string;
@@ -34,6 +34,7 @@ interface FormErrors {
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -81,11 +82,10 @@ export default function SignUp() {
     if (!validate()) return;
     setIsSubmitting(true);
     try {
-      const { message } = await signUp(formData.email, formData.password);
-      if (process.env.NODE_ENV === 'development') {
-        console.log(message); // optional
-      }
-      navigate('/signin');
+      // Use the signup function from our auth context
+      await signup(formData.email, formData.password, formData.email.split('@')[0]);
+      // After successful signup, navigate to home (user is now logged in)
+      navigate('/home');
     } catch(err: unknown) {
       setErrors((prev) => ({ 
         ...prev, 
@@ -145,6 +145,7 @@ export default function SignUp() {
               error={Boolean(errors.password)}
               helperText={errors.password ?? 'Use 8+ characters including letters, numbers & symbols'}
               margin="normal"
+              // Using newer pattern instead of deprecated InputProps
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
@@ -163,6 +164,7 @@ export default function SignUp() {
               error={Boolean(errors.confirmPassword)}
               helperText={errors.confirmPassword}
               margin="normal"
+              // Using newer pattern instead of deprecated InputProps
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
@@ -196,10 +198,23 @@ export default function SignUp() {
               fullWidth
               type="submit"
               variant="contained"
-              sx={{ mt: 3, py: 1.5 }}
+              sx={{ 
+                mt: 3, 
+                py: 1.5,
+                position: 'relative',
+                minHeight: '42px',
+                '& .MuiCircularProgress-root': {
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px'
+                }
+              }}
               disabled={isSubmitting}
             >
-              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
+              <span style={{ visibility: isSubmitting ? 'hidden' : 'visible' }}>Sign Up</span>
+              {isSubmitting && <CircularProgress size={24} color="inherit" />}
             </Button>
 
             <Divider sx={{ my: 3 }}>Or with</Divider>
